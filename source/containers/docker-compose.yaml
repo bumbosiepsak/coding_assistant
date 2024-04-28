@@ -1,0 +1,57 @@
+---
+services:
+  base:
+    image: ${DOCKER_REGISTRY}/base-${HOST_PLATFORM}_${HOST_SYSTEM}:${CODING_ASSISTANT_VERSION}
+    build:
+      context: ${PROJECT_ROOT}
+      dockerfile: source/containers/images/base/${HOST_PLATFORM}_${HOST_SYSTEM}/Dockerfile
+      args:
+        DOCKER_IMAGE_BASE: ${DOCKER_IMAGE_BASE}
+        DOCKER_REGISTRY: ${DOCKER_REGISTRY}
+        USER_GID: ${USER_GID}
+        USER_UID: ${USER_UID}
+    deploy:
+      replicas: 0
+
+  coding_assistant:
+    image: ${DOCKER_REGISTRY}/coding_assistant-${HOST_PLATFORM}_${HOST_SYSTEM}:${CODING_ASSISTANT_VERSION}
+    container_name: coding_assistant
+    restart: unless-stopped
+    depends_on:
+      - base
+    build:
+      context: ${PROJECT_ROOT}
+      dockerfile: source/containers/images/coding_assistant/${HOST_PLATFORM}_${HOST_SYSTEM}/Dockerfile
+      args:
+        DOCKER_REGISTRY: ${DOCKER_REGISTRY}
+        TEXT_GENERATION_WEBUI_REPOSITORY: ${TEXT_GENERATION_WEBUI_REPOSITORY}
+        TEXT_GENERATION_WEBUI_VERSION: ${TEXT_GENERATION_WEBUI_VERSION}
+        VERSION_TAG: ${CODING_ASSISTANT_VERSION}
+    command: ${RUNTIME_VARIANT}
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: '10m'
+    networks:
+      - coding_assistant_network
+    ports:
+      - target: 5000
+        published: ${NETWORK_PORT_API}
+        protocol: tcp
+        mode: host
+      - target: 5005
+        published: ${NETWORK_PORT_STREAMING}
+        protocol: tcp
+        mode: host
+      - target: 7860
+        published: ${NETWORK_PORT_WEB_UI}
+        protocol: tcp
+        mode: host
+    profiles:
+      - regular_service
+    volumes:
+      - ${PROJECT_ROOT}/volumes/models:/opt/coding_assistant/app/models
+
+networks:
+  coding_assistant_network:
