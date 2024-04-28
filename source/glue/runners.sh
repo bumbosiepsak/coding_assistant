@@ -47,6 +47,7 @@ function run_server() {
     export USER_UID="${USER_UID:-"$(id --user)"}"
     export USER_GID="${USER_GID:-"$(id --group)"}"
 
+    mkdir --parents "${PROJECT_ROOT}/volumes/config"
     mkdir --parents "${PROJECT_ROOT}/volumes/models"
 
     docker compose \
@@ -63,9 +64,12 @@ function run_server() {
 }
 
 function stop_server() {
+    local PROFILE="${1}"
+
     docker compose \
         --env-file "${PROJECT_ROOT}/source/containers/docker-compose-service.env" \
         --file "${PROJECT_ROOT}/${PROJECT_COMPOSE_FILE}" \
+        --profile "${PROFILE}" \
         --project-directory "${PROJECT_ROOT}" \
         --project-name "${PROJECT_NAME}" \
         down \
@@ -80,7 +84,7 @@ function run_command() {
         --file "${PROJECT_ROOT}/${PROJECT_COMPOSE_FILE}" \
         --project-directory "${PROJECT_ROOT}" \
         --project-name "${PROJECT_NAME}" \
-        --rm \
         run \
+            --rm \
             "${@}"
 }

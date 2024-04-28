@@ -13,4 +13,4 @@ source "${PROJECT_ROOT}/source/glue/runners.sh"
 
 validate_provisioning
 
-stop_server
+stop_server regular_service

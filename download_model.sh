@@ -37,20 +37,20 @@ else
 fi
 
 if ((${IS_GATED_MODEL})); then
-    echo dups ${IS_GATED_MODEL}
     validate_gated_model_access "${LLM_MODEL_NAME}" "${LLM_MODEL_URI}"
 
-    export HF_HUB_ENABLE_HF_TRANSFER="${HF_TOKEN}" # NOTE: Feed "text-generation-inference" too
+    export HUGGING_FACE_HUB_TOKEN="${HF_TOKEN}" # NOTE: Feed "text-generation-inference" too
 else
     # NOTE: No special access rights needed
     export HF_TOKEN=
-    export HF_HUB_ENABLE_HF_TRANSFER=
+    export HUGGING_FACE_HUB_TOKEN=
 fi
 
 run_command \
     --entrypoint /download_model.sh \
     --env HF_HUB_ENABLE_HF_TRANSFER=1 \
     --env HF_TOKEN \
+    --env HUGGING_FACE_HUB_TOKEN \
     --interactive \
     coding_assistant \
         "${LLM_MODEL_NAME}" \
