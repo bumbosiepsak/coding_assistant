@@ -1,0 +1,4 @@
+**
+!source/containers/images/coding_assistant/linux_x86_64/entrypoint.sh
+!source/containers/images/coding_assistant/linux_x86_64/requirements.txt
+!source/services/coding_assistant
