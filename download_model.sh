@@ -27,7 +27,7 @@ if [[ "${1:-not_full}" == "full" ]]; then
     fi
 
     LLM_MODEL_NAME=bigcode/starcoderplus
-    LLM_MODEL_VERSION=6bd835911561b927265e9e2c70ecf32521518c0f
+    LLM_MODEL_VERSION=c2c2f1397ed0caf52353abe14e35120af37a6d6b
 
 elif [[ "${1:-not_small}" == "small" ]]; then
     echo >&2 "INFO: You're downloading a smaller demo with the 'google-t5/t5-small' model (2GB)"
