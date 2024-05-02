@@ -13,12 +13,12 @@ function exit_handler {
 
 trap exit_handler SIGTERM SIGINT SIGQUIT SIGHUP
 
-if [ ! -f "${IMAGE_ASSISTANT_DIRECTORY}/app/models/config.yaml" ]; then
-    cp --archive --recursive "${IMAGE_ASSISTANT_DIRECTORY}/shared/models/config.yaml" "${IMAGE_ASSISTANT_DIRECTORY}/app/models/config.yaml"
+if [ ! -f "${CODING_ASSISTANT_DIRECTORY}/app/models/config.yaml" ]; then
+    cp --archive --recursive "${CODING_ASSISTANT_DIRECTORY}/shared/models/config.yaml" "${CODING_ASSISTANT_DIRECTORY}/app/models/config.yaml"
 fi
 
-source "${IMAGE_ASSISTANT_DIRECTORY}/venv/${RUNTIME_VARIANT}/bin/activate"
+source "${CODING_ASSISTANT_DIRECTORY}/venv/${RUNTIME_VARIANT}/bin/activate"
 
-source "${IMAGE_ASSISTANT_DIRECTORY}/variants/${RUNTIME_VARIANT}/entrypoint_options.sh"
+source "${CODING_ASSISTANT_DIRECTORY}/variants/${RUNTIME_VARIANT}/entrypoint_options.sh"
 
-python3 "${IMAGE_ASSISTANT_DIRECTORY}/app/server.py" "${CODING_ASSISTANT_RUNTIME_PARAMS[@]}"
+python3 "${CODING_ASSISTANT_DIRECTORY}/app/server.py" "${CODING_ASSISTANT_RUNTIME_PARAMS[@]}"

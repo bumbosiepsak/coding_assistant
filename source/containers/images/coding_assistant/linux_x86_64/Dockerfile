@@ -14,11 +14,11 @@ LABEL org.label-schema.vendor="Opera Software"
 
 # ---------------------------------------------------------------------------
 
-ENV IMAGE_ASSISTANT_DIRECTORY=/opt/coding_assistant
+ENV CODING_ASSISTANT_DIRECTORY=/opt/coding_assistant
 ENV MODEL_DOWNLOADER_DIRECTORY=/opt/model_downloader
 
-VOLUME "${IMAGE_ASSISTANT_DIRECTORY}/app/cache"
-VOLUME "${IMAGE_ASSISTANT_DIRECTORY}/app/models"
+VOLUME "${CODING_ASSISTANT_DIRECTORY}/app/cache"
+VOLUME "${CODING_ASSISTANT_DIRECTORY}/app/models"
 
 # NOTE: API interface
 EXPOSE 5000/tcp
@@ -31,7 +31,7 @@ EXPOSE 7860/tcp
 
 HEALTHCHECK --interval=10s --start-period=5s CMD ["curl", "--fail", "--silent", "http://localhost:7860"]
 
-COPY source/containers/images/coding_assistant/${PLATFORM_AND_SYSTEM}/variants "${IMAGE_ASSISTANT_DIRECTORY}/variants"
+COPY source/containers/images/coding_assistant/${PLATFORM_AND_SYSTEM}/variants "${CODING_ASSISTANT_DIRECTORY}/variants"
 
 ARG PYPI_REPOSITORY=pypi.org/simple
 
@@ -39,17 +39,17 @@ RUN --mount=type=cache,sharing=locked,mode=0755,uid=0,gid=0,id=pip3_cache,target
     <<EOF
     echo >&2 "Python virtual environments"
 
-    mkdir --parents "${IMAGE_ASSISTANT_DIRECTORY}/venv"
+    mkdir --parents "${CODING_ASSISTANT_DIRECTORY}/venv"
 
     assert_is_pip3_cache_accessible.sh /tmp/pip3/cache
 
-    find "${IMAGE_ASSISTANT_DIRECTORY}/variants" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r variant_directory; do
+    find "${CODING_ASSISTANT_DIRECTORY}/variants" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r variant_directory; do
 
         runtime_variant="$(basename "${variant_directory}")"
 
-        python3 -m venv "${IMAGE_ASSISTANT_DIRECTORY}/venv/${runtime_variant}"
+        python3 -m venv "${CODING_ASSISTANT_DIRECTORY}/venv/${runtime_variant}"
 
-        source "${IMAGE_ASSISTANT_DIRECTORY}/venv/${runtime_variant}/bin/activate"
+        source "${CODING_ASSISTANT_DIRECTORY}/venv/${runtime_variant}/bin/activate"
 
         pip3 install --upgrade \
             pip \
@@ -82,10 +82,10 @@ RUN --mount=type=cache,sharing=locked,mode=0755,uid=0,gid=0,id=pip3_cache,target
 
     assert_is_pip3_cache_accessible.sh /tmp/pip3/cache
 
-    find "${IMAGE_ASSISTANT_DIRECTORY}/variants" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r variant_directory; do
+    find "${CODING_ASSISTANT_DIRECTORY}/variants" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r variant_directory; do
 
         runtime_variant="$(basename "${variant_directory}")"
-        source "${IMAGE_ASSISTANT_DIRECTORY}/venv/${runtime_variant}/bin/activate"
+        source "${CODING_ASSISTANT_DIRECTORY}/venv/${runtime_variant}/bin/activate"
 
         pip3 install \
             --cache-dir /tmp/pip3/cache \
@@ -115,17 +115,17 @@ RUN --mount=type=cache,sharing=locked,mode=0755,uid=0,gid=0,id=pip3_cache,target
         git clone -c advice.detachedHead=false --depth 1 --single-branch --branch "$BRANCH" "$REMOTE" "$GIT_COPY"
     fi
 
-    cp --archive --recursive "${GIT_COPY}" "${IMAGE_ASSISTANT_DIRECTORY}/app"
+    cp --archive --recursive "${GIT_COPY}" "${CODING_ASSISTANT_DIRECTORY}/app"
 
-    mkdir --parents ${IMAGE_ASSISTANT_DIRECTORY}/shared/models
-    cp --archive --recursive "${GIT_COPY}/models/config.yaml" "${IMAGE_ASSISTANT_DIRECTORY}/shared/models/config.yaml"
+    mkdir --parents ${CODING_ASSISTANT_DIRECTORY}/shared/models
+    cp --archive --recursive "${GIT_COPY}/models/config.yaml" "${CODING_ASSISTANT_DIRECTORY}/shared/models/config.yaml"
 
     assert_is_pip3_cache_accessible.sh /tmp/pip3/cache
 
-    find "${IMAGE_ASSISTANT_DIRECTORY}/variants" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r variant_directory; do
+    find "${CODING_ASSISTANT_DIRECTORY}/variants" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r variant_directory; do
 
         runtime_variant="$(basename "${variant_directory}")"
-        source "${IMAGE_ASSISTANT_DIRECTORY}/venv/${runtime_variant}/bin/activate"
+        source "${CODING_ASSISTANT_DIRECTORY}/venv/${runtime_variant}/bin/activate"
 
         pip3 install \
             --cache-dir /tmp/pip3/cache \
@@ -147,6 +147,6 @@ COPY --chmod=755 source/containers/images/coding_assistant/${PLATFORM_AND_SYSTEM
 
 USER ${USER_NAME}
 
-WORKDIR "${IMAGE_ASSISTANT_DIRECTORY}/app"
+WORKDIR "${CODING_ASSISTANT_DIRECTORY}/app"
 
 ENTRYPOINT ["bash", "/entrypoint.sh"]
