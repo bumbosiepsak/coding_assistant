@@ -4,12 +4,12 @@ ARG DOCKER_IMAGE_BASE
 ARG DOCKER_REGISTRY
 FROM ${DOCKER_REGISTRY}/${DOCKER_IMAGE_BASE}
 
-LABEL com.clonerobotics.schema-version="1.0"
-LABEL com.clonerobotics.platform="linux"
-LABEL com.clonerobotics.system="x86_64"
+LABEL com.opera.schema-version="1.0"
+LABEL com.opera.platform="linux"
+LABEL com.opera.system="x86_64"
 
 LABEL org.label-schema.schema-version="1.0"
-LABEL org.label-schema.description="A base Docker image for the 'Clone Coding Task'"
+LABEL org.label-schema.description="A base Docker image for the 'Opera Coding Task'"
 LABEL org.label-schema.vendor="Clone Robotics"
 
 # ---------------------------------------------------------------------------
