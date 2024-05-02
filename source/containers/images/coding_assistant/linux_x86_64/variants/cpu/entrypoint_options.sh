@@ -8,7 +8,7 @@ fi
 CODING_ASSISTANT_RUNTIME_PARAMS=(
     --auto-devices
     --disk
-    --disk-cache-dir "${IMAGE_ASSISTANT_DIRECTORY}/app/cache"
+    --disk-cache-dir "${CODING_ASSISTANT_DIRECTORY}/app/cache"
     --listen
     --trust-remote-code
 )

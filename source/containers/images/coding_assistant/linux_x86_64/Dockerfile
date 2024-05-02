@@ -14,11 +14,11 @@ LABEL org.label-schema.vendor="Opera Software"
 
 # ---------------------------------------------------------------------------
 
-ENV IMAGE_ASSISTANT_DIRECTORY=/opt/coding_assistant
+ENV CODING_ASSISTANT_DIRECTORY=/opt/coding_assistant
 ENV MODEL_DOWNLOADER_DIRECTORY=/opt/model_downloader
 
-VOLUME "${IMAGE_ASSISTANT_DIRECTORY}/app/cache"
-VOLUME "${IMAGE_ASSISTANT_DIRECTORY}/app/models"
+VOLUME "${CODING_ASSISTANT_DIRECTORY}/app/cache"
+VOLUME "${CODING_ASSISTANT_DIRECTORY}/app/models"
 
 EXPOSE 7860/tcp
 
@@ -30,13 +30,13 @@ RUN --mount=type=cache,sharing=locked,mode=0755,uid=0,gid=0,id=pip3_cache,target
     <<EOF
     echo >&2 "Python virtual environments"
 
-    mkdir --parents "${IMAGE_ASSISTANT_DIRECTORY}/venv"
+    mkdir --parents "${CODING_ASSISTANT_DIRECTORY}/venv"
 
     assert_is_pip3_cache_accessible.sh /tmp/pip3/cache
 
-    python3 -m venv "${IMAGE_ASSISTANT_DIRECTORY}/venv"
+    python3 -m venv "${CODING_ASSISTANT_DIRECTORY}/venv"
 
-    source "${IMAGE_ASSISTANT_DIRECTORY}/venv/bin/activate"
+    source "${CODING_ASSISTANT_DIRECTORY}/venv/bin/activate"
 
     pip3 install --upgrade \
         pip \
@@ -67,6 +67,6 @@ COPY --chmod=755 source/containers/images/coding_assistant/${PLATFORM_AND_SYSTEM
 
 USER ${USER_NAME}
 
-WORKDIR "${IMAGE_ASSISTANT_DIRECTORY}/app"
+WORKDIR "${CODING_ASSISTANT_DIRECTORY}/app"
 
 ENTRYPOINT ["bash", "/entrypoint.sh"]

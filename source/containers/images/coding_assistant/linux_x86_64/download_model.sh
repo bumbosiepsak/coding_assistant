@@ -19,8 +19,8 @@ source "${MODEL_DOWNLOADER_DIRECTORY}/venv/bin/activate"
 # NOTE: Using the access token from the HF_TOKEN secret
 huggingface-cli download \
     "${LLM_MODEL_NAME}" \
-    --cache-dir "${IMAGE_ASSISTANT_DIRECTORY}/app/models/models_cache" \
-    --local-dir "${IMAGE_ASSISTANT_DIRECTORY}/app/models/${LLM_MODEL_NAME////-}" \
+    --cache-dir "${CODING_ASSISTANT_DIRECTORY}/app/models/models_cache" \
+    --local-dir "${CODING_ASSISTANT_DIRECTORY}/app/models/${LLM_MODEL_NAME////-}" \
     --repo-type model \
     --resume-download \
     --revision "${LLM_MODEL_VERSION}"
