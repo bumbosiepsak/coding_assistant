@@ -16,8 +16,8 @@ LABEL org.label-schema.vendor="Opera Software"
 
 ENV MODEL_DOWNLOADER_DIRECTORY=/opt/model_downloader
 
-VOLUME "${IMAGE_ASSISTANT_DIRECTORY}/app/cache"
-VOLUME "${IMAGE_ASSISTANT_DIRECTORY}/app/models"
+VOLUME "${CODING_ASSISTANT_DIRECTORY}/app/cache"
+VOLUME "${CODING_ASSISTANT_DIRECTORY}/app/models"
 
 ARG PYPI_REPOSITORY=pypi.org/simple
 

@@ -14,7 +14,7 @@ LABEL org.label-schema.vendor="Opera Software"
 
 # ---------------------------------------------------------------------------
 
-ENV IMAGE_ASSISTANT_DIRECTORY=/opt/coding_assistant
+ENV CODING_ASSISTANT_DIRECTORY=/opt/coding_assistant
 
 EXPOSE 7860/tcp
 
@@ -26,13 +26,13 @@ RUN --mount=type=cache,sharing=locked,mode=0755,uid=0,gid=0,id=pip3_cache,target
     <<EOF
     echo >&2 "Python virtual environments"
 
-    mkdir --parents "${IMAGE_ASSISTANT_DIRECTORY}/venv"
+    mkdir --parents "${CODING_ASSISTANT_DIRECTORY}/venv"
 
     assert_is_pip3_cache_accessible.sh /tmp/pip3/cache
 
-    python3 -m venv "${IMAGE_ASSISTANT_DIRECTORY}/venv"
+    python3 -m venv "${CODING_ASSISTANT_DIRECTORY}/venv"
 
-    source "${IMAGE_ASSISTANT_DIRECTORY}/venv/bin/activate"
+    source "${CODING_ASSISTANT_DIRECTORY}/venv/bin/activate"
 
     pip3 install --upgrade \
         pip \
@@ -40,7 +40,7 @@ RUN --mount=type=cache,sharing=locked,mode=0755,uid=0,gid=0,id=pip3_cache,target
         wheel
 EOF
 
-COPY --chmod=644 source/containers/images/coding_assistant/${PLATFORM_AND_SYSTEM}/requirements.txt "${IMAGE_ASSISTANT_DIRECTORY}/requirements.txt"
+COPY --chmod=644 source/containers/images/coding_assistant/${PLATFORM_AND_SYSTEM}/requirements.txt "${CODING_ASSISTANT_DIRECTORY}/requirements.txt"
 
 RUN --mount=type=cache,sharing=locked,mode=0755,uid=0,gid=0,id=pip3_cache,target=/tmp/pip3/cache \
     <<EOF
@@ -48,20 +48,20 @@ RUN --mount=type=cache,sharing=locked,mode=0755,uid=0,gid=0,id=pip3_cache,target
 
     assert_is_pip3_cache_accessible.sh /tmp/pip3/cache
 
-    source "${IMAGE_ASSISTANT_DIRECTORY}/venv/bin/activate"
+    source "${CODING_ASSISTANT_DIRECTORY}/venv/bin/activate"
 
     pip3 install \
         --cache-dir /tmp/pip3/cache \
         --index-url "https://$PYPI_REPOSITORY" \
-        --requirement "${IMAGE_ASSISTANT_DIRECTORY}/requirements.txt"
+        --requirement "${CODING_ASSISTANT_DIRECTORY}/requirements.txt"
 EOF
 
-COPY source/services/coding_assistant "${IMAGE_ASSISTANT_DIRECTORY}/source/"
+COPY source/services/coding_assistant "${CODING_ASSISTANT_DIRECTORY}/source/"
 
 USER ${USER_NAME}
 
-WORKDIR "${IMAGE_ASSISTANT_DIRECTORY}/source"
+WORKDIR "${CODING_ASSISTANT_DIRECTORY}/source"
 
 ENV GRADIO_SERVER_NAME="0.0.0.0"
 
-ENTRYPOINT source "${IMAGE_ASSISTANT_DIRECTORY}/venv/bin/activate" && python3 "${IMAGE_ASSISTANT_DIRECTORY}/source/app.py"
+ENTRYPOINT source "${CODING_ASSISTANT_DIRECTORY}/venv/bin/activate" && python3 "${CODING_ASSISTANT_DIRECTORY}/source/app.py"
