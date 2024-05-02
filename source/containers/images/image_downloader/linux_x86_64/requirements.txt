@@ -1,0 +1,2 @@
+huggingface-hub[cli]==0.22.2
+huggingface-hub[hf_transfer]==0.22.2

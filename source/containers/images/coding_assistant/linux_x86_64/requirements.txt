@@ -1,0 +1,2 @@
+gradio==3.48.0
+text_generation==0.7.0

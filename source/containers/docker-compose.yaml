@@ -1,0 +1,101 @@
+---
+services:
+  text_generation_inference:
+    image: ghcr.io/huggingface/text-generation-inference:${TEXT_GENERATION_INFERENCE_VERSION}
+    container_name: text_generation_inference
+    restart: unless-stopped
+    command:
+      - '--hostname'
+      - '0.0.0.0'
+      - '--tokenizer-config-path'
+      - '/mnt/volumes/config'
+      - '--huggingface-hub-cache'
+      - '/mnt/volumes/models/models_cache'
+      - '--model-id'
+      - ${LLM_MODEL_NAME}
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: '10m'
+    networks:
+      - coding_assistant_network
+    ports:
+      - target: 80
+        host_ip: 127.0.0.1
+        published: ${NETWORK_PORT_API}
+        protocol: tcp
+        mode: host
+    profiles:
+      - regular_service
+    shm_size: 2gb
+    volumes:
+      - ${PROJECT_ROOT}/volumes/config:/mnt/volumes/config
+      - ${PROJECT_ROOT}/volumes/models:/mnt/volumes/models
+
+  base:
+    image: ${DOCKER_REGISTRY}/base-${HOST_PLATFORM}_${HOST_SYSTEM}:${CODING_ASSISTANT_VERSION}
+    build:
+      context: ${PROJECT_ROOT}
+      dockerfile: source/containers/images/base/${HOST_PLATFORM}_${HOST_SYSTEM}/Dockerfile
+      args:
+        DOCKER_IMAGE_BASE: ${DOCKER_IMAGE_BASE}
+        DOCKER_REGISTRY: ${DOCKER_REGISTRY}
+        USER_GID: ${USER_GID}
+        USER_UID: ${USER_UID}
+    deploy:
+      replicas: 0
+
+  coding_assistant:
+    image: ${DOCKER_REGISTRY}/coding_assistant-${HOST_PLATFORM}_${HOST_SYSTEM}:${CODING_ASSISTANT_VERSION}
+    container_name: coding_assistant
+    restart: unless-stopped
+    depends_on:
+      - base
+      - text_generation_inference
+    build:
+      context: ${PROJECT_ROOT}
+      dockerfile: source/containers/images/coding_assistant/${HOST_PLATFORM}_${HOST_SYSTEM}/Dockerfile
+      args:
+        DOCKER_REGISTRY: ${DOCKER_REGISTRY}
+        VERSION_TAG: ${CODING_ASSISTANT_VERSION}
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: '10m'
+    networks:
+      - coding_assistant_network
+    ports:
+      - target: 7860
+        published: ${NETWORK_PORT_WEB_UI}
+        protocol: tcp
+        mode: host
+    profiles:
+      - regular_service
+
+  image_downloader:
+    image: ${DOCKER_REGISTRY}/image_downloader-${HOST_PLATFORM}_${HOST_SYSTEM}:${CODING_ASSISTANT_VERSION}
+    container_name: image_downloader
+    restart: unless-stopped
+    depends_on:
+      - base
+    build:
+      context: ${PROJECT_ROOT}
+      dockerfile: source/containers/images/image_downloader/${HOST_PLATFORM}_${HOST_SYSTEM}/Dockerfile
+      args:
+        DOCKER_REGISTRY: ${DOCKER_REGISTRY}
+        VERSION_TAG: ${CODING_ASSISTANT_VERSION}
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: '10m'
+    profiles:
+      - image_download
+    volumes:
+      - ${PROJECT_ROOT}/volumes/config:/mnt/volumes/config
+      - ${PROJECT_ROOT}/volumes/models:/mnt/volumes/models
+
+networks:
+  coding_assistant_network:
