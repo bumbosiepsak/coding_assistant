@@ -1,5 +1,0 @@
-**
-!source/containers/images/coding_assistant/linux_x86_64/download_model.sh
-!source/containers/images/coding_assistant/linux_x86_64/entrypoint.sh
-!source/containers/images/coding_assistant/linux_x86_64/requirements.txt
-!source/containers/images/coding_assistant/linux_x86_64/variants/cpu
