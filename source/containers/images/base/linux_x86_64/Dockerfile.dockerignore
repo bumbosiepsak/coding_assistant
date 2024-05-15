@@ -1,0 +1,12 @@
+**
+!source/containers/files/linux_x86_64/80-retries
+!source/containers/files/linux_x86_64/99-local
+!source/containers/files/linux_x86_64/keep-cache
+!source/containers/scripts/linux_x86_64/assert_is_git_reachable.sh
+!source/containers/scripts/linux_x86_64/assert_is_git_tagged.sh
+!source/containers/scripts/linux_x86_64/assert_is_pip3_cache_accessible.sh
+!source/containers/scripts/linux_x86_64/create_user.sh
+!source/containers/scripts/linux_x86_64/is_git_working_copy.sh
+!source/containers/scripts/linux_x86_64/trust_ssh_git_repository.sh
+!source/containers/third-party/apt-fast/v1.9.12/apt-fast
+!source/containers/third-party/apt-fast/v1.9.12/apt-fast.conf
